@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   main.innerHTML = `
     <div class="max-w-6xl mx-auto px-4 py-10">
       <div class="mb-10">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Строительные материалы</h1>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Building Materials</h1>
         <p class="mt-3 text-xl text-gray-600">
           Premium construction supplies for all your projects
         </p>
@@ -40,8 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sortedProducts.forEach(product => {
       const card = document.createElement('div');
-      card.className =
-        'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full';
+      card.className = 'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full';
 
       card.innerHTML = `
         <a href="product.html?id=${product.id}" class="block relative overflow-hidden">
@@ -104,5 +103,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   sortSelect.addEventListener('change', (e) => {
     sortAndRender(e.target.value);
+  });
+
+  grid.addEventListener('click', function (e) {
+    const btn = e.target.closest('.add-to-cart');
+    if (!btn) return;
+
+    const id = parseInt(btn.dataset.id);
+    if (!id) return;
+
+    let cart = window.cartUtils.getCart();
+    const existing = cart.find(item => item.id === id);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ id, quantity: 1 });
+    }
+
+    window.cartUtils.saveCart(cart);
+
+    const originalText = btn.textContent;
+    btn.textContent = 'Добавлено!';
+    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+      btn.disabled = false;
+    }, 1400);
   });
 });
