@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartContent = document.getElementById('cart-content');
   const emptyCart = document.getElementById('empty-cart');
   const cartItems = document.getElementById('cart-items');
+  const subtotalEl = document.getElementById('subtotal');
+  const taxEl = document.getElementById('tax');
+  const discountEl = document.getElementById('discount');
+  const totalEl = document.getElementById('total');
+
+  let promoDiscount = 0;
 
   function renderCart() {
     const cart = window.cartUtils.getCart();
@@ -29,28 +35,59 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemTotal = product.price * item.quantity;
       subtotal += itemTotal;
 
-      const row = document.createElement('div');
-      row.className = 'flex flex-col sm:flex-row items-start sm:items-center gap-4 py-6 border-b last:border-b-0 px-4 sm:px-6 hover:bg-gray-50 transition';
-
-      row.innerHTML = `
-        <img src="${product.mainImage}" alt="${product.name}" class="w-20 h-20 object-cover rounded-lg sm:w-24 sm:h-24">
-        <div class="flex-1 min-w-0">
-          <h3 class="font-medium text-lg truncate">${product.name}</h3>
-          <p class="text-sm text-gray-600 mt-1">${product.category}</p>
+            const desktopRow = document.createElement('div');
+      desktopRow.className = 'hidden md:grid grid-cols-[80px_2fr_100px_140px_100px_60px] gap-4 px-6 py-6 items-center border-b last:border-b-0 hover:bg-gray-50 transition';
+      desktopRow.innerHTML = `
+        <div class="flex justify-center">
+          <img src="${product.mainImage}" alt="${product.name}" class="w-16 h-16 object-cover rounded-lg">
         </div>
-        <div class="text-center font-medium sm:w-24">$${product.price.toFixed(2)}</div>
-        <div class="flex items-center border border-gray-200 rounded-lg w-fit">
-          <button class="qty-minus px-4 py-2 text-lg hover:bg-gray-100 transition" data-id="${item.id}">−</button>
-          <span class="w-12 text-center font-medium">${item.quantity}</span>
-          <button class="qty-plus px-4 py-2 text-lg hover:bg-gray-100 transition" data-id="${item.id}">+</button>
+        <div class="min-w-0">
+          <h3 class="font-medium text-base max-w-[180px] truncate">${product.name}</h3>
+          <p class="text-gray-500 text-xs truncate">${product.category}</p>
         </div>
-        <div class="font-bold text-primary sm:w-32 text-center">$${itemTotal.toFixed(2)}</div>
-        <button class="remove-item text-red-500 hover:text-red-700 transition text-xl" data-id="${item.id}">
-          ×
-        </button>
+        <div class="text-center font-medium text-gray-700">${product.price.toFixed(2)} $</div>
+        <div class="flex justify-center">
+          <div class="flex items-center border border-gray-200 rounded">
+            <button class="qty-minus px-3 py-1.5 text-base hover:bg-gray-100 rounded-l" data-id="${item.id}">−</button>
+            <span class="w-10 text-center font-medium">${item.quantity}</span>
+            <button class="qty-plus px-3 py-1.5 text-base hover:bg-gray-100 rounded-r" data-id="${item.id}">+</button>
+          </div>
+        </div>
+        <div class="text-center font-bold text-primary">${itemTotal.toFixed(2)} $</div>
+        <div class="flex justify-center items-end">
+          <button class="remove-item w-8 h-8 bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-600 transition text-lg font-bold rounded" data-id="${item.id}">
+            ×
+          </button>
+        </div>
       `;
 
-      cartItems.appendChild(row);
+      const mobileRow = document.createElement('div');
+      mobileRow.className = 'md:hidden p-4 border-b last:border-b-0';
+      mobileRow.innerHTML = `
+        <div class="flex gap-4">
+          <img src="${product.mainImage}" alt="${product.name}" class="w-24 h-24 object-cover rounded-lg">
+          <div class="flex-1">
+            <h3 class="font-medium text-base">${product.name}</h3>
+            <p class="text-gray-600 text-sm">${product.category}</p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="font-bold text-primary">$${itemTotal.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="flex items-center border border-gray-200 rounded-lg">
+            <button class="qty-minus px-4 py-2 text-lg hover:bg-gray-100 transition rounded-l-lg" data-id="${item.id}">−</button>
+            <span class="w-12 text-center font-medium">${item.quantity}</span>
+            <button class="qty-plus px-4 py-2 text-lg hover:bg-gray-100 transition rounded-r-lg" data-id="${item.id}">+</button>
+          </div>
+          <button class="remove-item w-10 h-10 bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-700 transition text-xl font-bold rounded-md" data-id="${item.id}">
+            ×
+          </button>
+        </div>
+      `;
+
+      cartItems.appendChild(desktopRow);
+      cartItems.appendChild(mobileRow);
     });
 
     updateTotals(subtotal);
@@ -58,29 +95,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateTotals(subtotal) {
     const tax = subtotal * 0.08;
-    const total = subtotal + tax;
+    const discount = subtotal * promoDiscount;
+    const total = subtotal + tax - discount;
 
-    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('discount').textContent = '-$0.00';
-    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    taxEl.textContent = `$${tax.toFixed(2)}`;
+    discountEl.textContent = promoDiscount > 0 ? `-$${discount.toFixed(2)}` : '-$0.00';
+    totalEl.textContent = `$${total.toFixed(2)}`;
   }
 
   cartItems.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
+    const button = e.target.closest('button');
+    if (!button) return;
 
-    const id = parseInt(btn.dataset.id);
+    const id = parseInt(button.dataset.id);
     if (!id) return;
 
     let cart = window.cartUtils.getCart();
 
-    if (btn.classList.contains('remove-item')) {
+    if (button.classList.contains('remove-item')) {
       cart = cart.filter(i => i.id !== id);
-    } else if (btn.classList.contains('qty-minus')) {
+    } else if (button.classList.contains('qty-minus')) {
       const item = cart.find(i => i.id === id);
       if (item && item.quantity > 1) item.quantity--;
-    } else if (btn.classList.contains('qty-plus')) {
+    } else if (button.classList.contains('qty-plus')) {
       const item = cart.find(i => i.id === id);
       if (item) item.quantity++;
     }
@@ -91,6 +129,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderCart();
-  
   window.addEventListener('cart-changed', renderCart);
 });
