@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const id = parseInt(urlParams.get('id'));
 
-
   const product = products.find(p => p.id === id);
 
   if (!product) {
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('breadcrumb-name').textContent = product.name;
-
   document.getElementById('product-name').textContent = product.name;
   document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
 
@@ -37,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const thumbsContainer = document.getElementById('thumbnails');
   thumbsContainer.innerHTML = '';
 
-  const images = [product.mainImage, ...(product.thumbnails || [])].slice(0, 4); // до 4 фото
+  const images = [product.mainImage, ...(product.thumbnails || [])].slice(0, 4);
 
   images.forEach((src, index) => {
     const thumb = document.createElement('div');
@@ -72,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       specsGrid.appendChild(item);
     });
   } else {
-    specsGrid.innerHTML = '<p class="text-gray-500">Характеристики отсутствуют</p>';
+    specsGrid.innerHTML = '<p class="text-gray-500">Характеристики отсутствуют</p>';те
   }
 
   let quantity = 1;
@@ -91,5 +89,36 @@ document.addEventListener('DOMContentLoaded', () => {
     quantity = parseInt(qtyInput.value) || 1;
     if (quantity < 1) quantity = 1;
     qtyInput.value = quantity;
+  });
+
+  const addBtn = document.getElementById('add-to-cart-btn');
+
+  addBtn.addEventListener('click', () => {
+    let currentCart = window.cartUtils.getCart();
+
+    const existingItem = currentCart.find(item => item.id === product.id);
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      currentCart.push({ id: product.id, quantity });
+    }
+
+    window.cartUtils.saveCart(currentCart);
+
+    const originalText = addBtn.textContent;
+    const originalClasses = addBtn.className;
+
+    addBtn.textContent = 'Добавлено!';
+    addBtn.classList.add('bg-green-600');
+    addBtn.disabled = true;
+
+    setTimeout(() => {
+      addBtn.textContent = originalText;
+      addBtn.className = originalClasses;
+      addBtn.disabled = false;
+    }, 1200);
+
+    window.cartUtils.updateCartBadge();
   });
 });

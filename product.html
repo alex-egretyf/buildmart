@@ -130,15 +130,18 @@
         </div>
 
         <div class="mt-12">
-          <details class="group border border-gray-200 rounded-xl overflow-hidden">
-            <summary class="flex justify-between items-center px-6 py-5 font-bold text-xl cursor-pointer hover:bg-gray-50 transition select-none">
-              Технические характеристики
-              <svg class="w-6 h-6 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <details class="group border border-gray-200 rounded-lg overflow-hidden">
+            <summary class="flex justify-between items-center px-6 py-4 font-bold text-xl cursor-pointer hover:bg-gray-50 transition select-none">
+              Технические особенности
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </summary>
-            <div class="px-6 pb-6 pt-2">
-              <div class="bg-gray-50 rounded-lg p-6" id="specs-grid"></div>
+          
+            <div class="px-6 pb-6">
+              <div class="bg-gray-50 rounded-lg p-6 mt-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4" id="specs-grid"></div>
+              </div>
             </div>
           </details>
         </div>
@@ -181,8 +184,8 @@
     </div>
   </footer>
 
+  <script defer src="./js/main.js"></script>
   <script type="module" defer src="./data/products.js"></script>
   <script type="module" defer src="./js/product.js"></script>
-  <script defer src="./js/main.js"></script>
 </body>
 </html>
