@@ -61,6 +61,15 @@
         <div class="bg-white rounded-lg shadow overflow-hidden">
           <div id="cart-items" class="divide-y"></div>
         </div>
+
+        <div class="mt-6 bg-white rounded-lg shadow p-6">
+          <div class="font-medium mb-3">Есть промокод?</div>
+          <div class="flex">
+            <input id="promo" type="text" placeholder="Введите промокод" class="flex-1 border border-gray-300 rounded-l-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary">
+            <button id="apply-promo" class="bg-primary text-white px-8 rounded-r-lg hover:bg-primary-dark transition">Применить</button>
+          </div>
+          <p id="promo-message" class="text-sm mt-2 min-h-[1.25rem]"></p>
+        </div>
       </div>
       <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow p-6 sticky top-20">

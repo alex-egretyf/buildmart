@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemTotal = product.price * item.quantity;
       subtotal += itemTotal;
 
-            const desktopRow = document.createElement('div');
+      const desktopRow = document.createElement('div');
       desktopRow.className = 'hidden md:grid grid-cols-[80px_2fr_100px_140px_100px_60px] gap-4 px-6 py-6 items-center border-b last:border-b-0 hover:bg-gray-50 transition';
       desktopRow.innerHTML = `
         <div class="flex justify-center">
@@ -128,6 +128,29 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   });
 
+  const promoInput = document.getElementById('promo');
+  const applyBtn = document.getElementById('apply-promo');
+  const promoMsg = document.getElementById('promo-message');
+
+  applyBtn.addEventListener('click', () => {
+    const code = promoInput.value.trim().toUpperCase();
+    promoMsg.className = 'text-sm mt-2';
+
+    if (code === 'SAVE10') {
+      promoDiscount = 0.1;
+      promoMsg.textContent = 'Промокод применён! -10%';
+      promoMsg.classList.add('text-green-600');
+    } else if (code === '') {
+      promoMsg.textContent = 'Введите промокод';
+      promoMsg.classList.add('text-gray-600');
+    } else {
+      promoDiscount = 0;
+      promoMsg.textContent = 'Неверный промокод';
+      promoMsg.classList.add('text-red-600');
+    }
+
+    renderCart();
+  });
   renderCart();
   window.addEventListener('cart-changed', renderCart);
 });
