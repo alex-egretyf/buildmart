@@ -1,32 +1,188 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BuildMart — Товар</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BuildMart — [Название товара]</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      content: ["./**/*.{html,js}"],
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#FF6200', dark: '#E55A00' },
+            gray: {
+              50: '#F9FAFB', 100: '#F3F4F6', 200: '#E5E7EB', 300: '#D1D5DB',
+              400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563', 700: '#374151',
+              800: '#1F2937', 900: '#111827'
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          boxShadow: {
+            'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            'card-hover': '0 10px 15px -3px rgba(255, 98, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-
+<body class="bg-gray-50 min-h-screen flex flex-col antialiased">
   <header class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="index.html" class="text-3xl font-bold text-primary">BM</a>
-      <nav class="hidden md:flex gap-6">
-        <a href="index.html" class="text-gray-700 hover:text-primary">Каталог</a>
-        <a href="#" class="text-gray-700 hover:text-primary">Категории</a>
-        <a href="#" class="text-gray-700 hover:text-primary">Акции</a>
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-3xl font-bold text-primary">BM</span>
+        <span class="text-xl font-semibold text-gray-800">BuildMart</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="text-gray-700 hover:text-primary transition-colors">Каталог</a>
+        <a href="#" class="text-gray-700 hover:text-primary transition-colors">Категории</a>
+        <a href="#" class="text-gray-700 hover:text-primary transition-colors">Акции</a>
+        <a href="#" class="text-gray-700 hover:text-primary transition-colors">О нас</a>
       </nav>
+      <div class="flex items-center gap-6">
+        <div class="relative hidden md:block">
+          <input type="text" placeholder="Поиск товаров..." class="pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition">
+          <svg class="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <a href="cart.html" class="relative">
+          <svg class="w-7 h-7 text-gray-700 hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">0</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold text-gray-900">Товар</h1>
-    <p class="text-gray-600 mt-4">Детали</p>
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-10 pt-20">
+    <div class="text-sm text-gray-500 mb-6">
+      <a href="index.html" class="hover:text-primary">Каталог</a> / <span id="breadcrumb-name"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div>
+        <div class="relative rounded-2xl overflow-hidden border border-gray-200 bg-white aspect-[4/3]">
+          <img id="main-image" src="" alt="" class="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out">
+        </div>
+        <div id="thumbnails" class="flex gap-4 mt-6 justify-center"></div>
+      </div>
+
+      <div>
+        <h1 id="product-name" class="text-4xl font-bold text-gray-900"></h1>
+        <div class="flex items-center gap-3 mt-4">
+          <div id="rating-stars" class="flex text-yellow-400 text-3xl"></div>
+          <span id="rating-text" class="text-gray-600 text-lg"></span>
+        </div>
+        <div id="product-price" class="text-5xl font-bold text-primary mt-6"></div>
+
+        <div class="flex flex-wrap gap-8 mt-10">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">📦</span>
+            <div>
+              <div class="font-medium">Гарантия качества</div>
+              <div class="text-sm text-gray-500">Материалы премиум-класса</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🚚</span>
+            <div>
+              <div class="font-medium">Быстрая доставка</div>
+              <div class="text-sm text-gray-500">2-5 рабочих дней</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🛡️</span>
+            <div>
+              <div class="font-medium">Возврат</div>
+              <div class="text-sm text-gray-500">30 дней</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10">
+          <div class="text-base font-medium text-gray-700 mb-3">Количество</div>
+          <div class="flex items-center border border-gray-300 rounded-lg w-fit">
+            <button id="qty-minus" class="w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-100 transition">-</button>
+            <input id="qty-input" type="text" value="1" class="w-16 text-center text-2xl font-medium focus:outline-none">
+            <button id="qty-plus" class="w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-100 transition">+</button>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <button id="add-to-cart-btn" class="flex-1 bg-primary hover:bg-primary-dark text-white py-5 rounded-xl font-medium text-lg transition flex items-center justify-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Добавить в корзину
+          </button>
+          <button class="flex-1 border-2 border-primary text-primary hover:bg-primary/10 py-5 rounded-xl font-medium text-lg transition">
+            Купить сейчас
+          </button>
+        </div>
+
+        <div class="mt-12">
+          <h2 class="text-2xl font-bold mb-4">Описание</h2>
+          <div id="product-description" class="text-gray-700 leading-relaxed prose max-w-none"></div>
+        </div>
+
+        <div class="mt-12">
+          <details class="group border border-gray-200 rounded-xl overflow-hidden">
+            <summary class="flex justify-between items-center px-6 py-5 font-bold text-xl cursor-pointer hover:bg-gray-50 transition select-none">
+              Технические характеристики
+              <svg class="w-6 h-6 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 pt-2">
+              <div class="bg-gray-50 rounded-lg p-6" id="specs-grid"></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <footer class="bg-gray-800 text-gray-300 py-12 text-center">
-    © 2025 BuildMart. Все права защищены.
+  <footer class="bg-gray-800 text-gray-300 py-12 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="text-white text-lg font-semibold mb-4">BuildMart</h3>
+        <p class="text-sm">Строительные материалы</p>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-3">Навигация</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="hover:text-primary transition">Каталог</a></li>
+          <li><a href="#" class="hover:text-primary transition">Акции</a></li>
+          <li><a href="#" class="hover:text-primary transition">Доставка</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-3">Контакты</h4>
+        <ul class="space-y-2 text-sm">
+          <li>+375 (29) 123-45-67</li>
+          <li>support@buildmart.by</li>
+          <li>г. Гродно</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-3">Мы в соцсетях</h4>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-primary transition">VK</a>
+          <a href="#" class="hover:text-primary transition">TG</a>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm">
+      © 2025 BuildMart. Все права защищены.
+    </div>
   </footer>
 
+  <script type="module" defer src="./data/products.js"></script>
+  <script type="module" defer src="./js/product.js"></script>
+  <script defer src="./js/main.js"></script>
 </body>
 </html>
