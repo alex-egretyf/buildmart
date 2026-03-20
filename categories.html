@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BuildMart — Каталог</title>
- 
+  <title>BuildMart — Категории</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,11 +17,6 @@
               400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563', 700: '#374151',
               800: '#1F2937', 900: '#111827'
             }
-          },
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-          boxShadow: {
-            'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            'card-hover': '0 10px 15px -3px rgba(255, 98, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
           }
         }
       }
@@ -38,17 +32,13 @@
       </a>
       <nav class="hidden md:flex items-center gap-8">
         <a href="index.html" class="text-gray-700 hover:text-primary transition-colors">Каталог</a>
-        <a href="categories.html" class="text-gray-700 hover:text-primary transition-colors">Категории</a>
+        <a href="categories.html" class="text-primary font-medium">Категории</a>
         <a href="deals.html" class="text-gray-700 hover:text-primary transition-colors">Акции</a>
         <a href="about.html" class="text-gray-700 hover:text-primary transition-colors">О нас</a>
       </nav>
       <div class="flex items-center gap-6">
         <div class="relative hidden md:block">
-          <input
-            type="text"
-            placeholder="Поиск товаров..."
-            class="pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition"
-          >
+          <input type="text" placeholder="Поиск товаров..." class="pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition">
           <svg class="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -57,18 +47,24 @@
           <svg class="w-7 h-7 text-gray-700 hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">
-            0
-          </span>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">0</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 py-10 pt-6"></main>
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-10">
+    <nav class="text-sm text-gray-500 mb-6">
+      <a href="index.html" class="hover:text-primary">Главная</a> / <span class="text-gray-900 font-medium">Категории</span>
+    </nav>
+
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-10">Категории товаров</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="categories-grid"></div>
+  </main>
 
   <footer class="bg-gray-800 text-gray-300 py-12 mt-auto">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
         <h3 class="text-white text-lg font-semibold mb-4">BuildMart</h3>
         <p class="text-sm">Строительные материалы</p>
@@ -77,8 +73,8 @@
         <h4 class="text-white font-medium mb-3">Навигация</h4>
         <ul class="space-y-2 text-sm">
           <li><a href="index.html" class="hover:text-primary transition">Каталог</a></li>
-          <li><a href="#" class="hover:text-primary transition">Акции</a></li>
-          <li><a href="#" class="hover:text-primary transition">Доставка</a></li>
+          <li><a href="categories.html" class="hover:text-primary transition">Категории</a></li>
+          <li><a href="deals.html" class="hover:text-primary transition">Акции</a></li>
         </ul>
       </div>
       <div>
@@ -93,7 +89,7 @@
         <h4 class="text-white font-medium mb-3">Мы в соцсетях</h4>
         <div class="flex gap-4">
           <a href="#" class="hover:text-primary transition">VK</a>
-          <a href="#" class="hover:text-primary transition">TG</a>
+          <a href="#" class="hover:text-primary transition">Telegram</a>
         </div>
       </div>
     </div>
@@ -101,10 +97,8 @@
       © 2025 BuildMart. Все права защищены.
     </div>
   </footer>
-
-  <script defer src="./js/main.js"></script>
+  
   <script type="module" defer src="./data/products.js"></script>
-  <script type="module" defer src="./js/catalog.js"></script>
-  <script type="module" defer src="./js/filters.js"></script>
+  <script type="module" defer src="./js/categories.js"></script>
 </body>
 </html>
