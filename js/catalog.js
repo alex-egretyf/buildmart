@@ -345,4 +345,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateRangeDisplay();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchQuery = urlParams.get('search');
+
+  if (searchQuery) {
+    const filtered = products.filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<p class="text-center text-gray-600 py-12 text-xl col-span-full">
+        Товары по запросу "${searchQuery}" не найдены
+      </p>`;
+      productsCount.textContent = '0';
+    } else {
+      renderProducts(filtered);
+      productsCount.textContent = filtered.length;
+    }
+
+    history.replaceState(null, '', window.location.pathname);
+  }
 });
