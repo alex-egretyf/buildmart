@@ -22,14 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
 
         <div class="flex items-center gap-4">
-          <div class="flex items-center gap-3">
-            <select id="sort" class="border border-gray-300 rounded-md px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
-              <option value="name-asc">По имени (А–Я)</option>
-              <option value="name-desc">По имени (Я–А)</option>
-              <option value="price-asc">По цене (возр.)</option>
-              <option value="price-desc">По цене (убыв.)</option>
-            </select>
-          </div>
+          <select id="sort" class="border border-gray-300 rounded-md px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+            <option value="name-asc">По имени (А–Я)</option>
+            <option value="name-desc">По имени (Я–А)</option>
+            <option value="price-asc">По цене (возр.)</option>
+            <option value="price-desc">По цене (убыв.)</option>
+          </select>
           <span class="text-gray-600">Показано <span id="products-count">${products.length}</span> товаров</span>
         </div>
       </div>
@@ -62,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <input type="range" id="sliderMin" min="0" max="400" value="0" class="absolute w-full h-12 md:h-14 opacity-0 pointer-events-auto cursor-pointer appearance-none">
               <input type="range" id="sliderMax" min="0" max="400" value="400" class="absolute w-full h-12 md:h-14 opacity-0 pointer-events-auto cursor-pointer appearance-none">
             </div>
-            
             <div class="flex justify-between text-sm text-gray-600 mt-3">
               <span id="minDisplay">$0</span>
               <span id="maxDisplay">$400</span>
@@ -87,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const filtersPanel = document.getElementById('filters-panel');
   const productsCount = document.getElementById('products-count');
   const clearFiltersBtn = document.getElementById('clear-filters');
-
   const ratingFilters = document.querySelectorAll('.rating-filter');
   const sliderMin = document.getElementById('sliderMin');
   const sliderMax = document.getElementById('sliderMax');
@@ -99,18 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
   let minPrice = 0;
   let maxPrice = 400;
 
+  function sortProducts(list, value) {
+    const sorted = [...list];
+    if (value === 'name-asc')   sorted.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    if (value === 'name-desc')  sorted.sort((a, b) => b.name.localeCompare(a.name, 'ru'));
+    if (value === 'price-asc')  sorted.sort((a, b) => a.price - b.price);
+    if (value === 'price-desc') sorted.sort((a, b) => b.price - a.price);
+    return sorted;
+  }
+
   function updateRangeDisplay() {
     minPrice = parseInt(sliderMin.value);
     maxPrice = parseInt(sliderMax.value);
 
-    if (minPrice > maxPrice) {
-      sliderMin.value = maxPrice;
-      minPrice = maxPrice;
-    }
-    if (maxPrice < minPrice) {
-      sliderMax.value = minPrice;
-      maxPrice = minPrice;
-    }
+    if (minPrice > maxPrice) { sliderMin.value = maxPrice; minPrice = maxPrice; }
+    if (maxPrice < minPrice) { sliderMax.value = minPrice; maxPrice = minPrice; }
 
     minDisplay.textContent = `$${minPrice}`;
     maxDisplay.textContent = `$${maxPrice}`;
@@ -124,34 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyFilters() {
     let filtered = [...products];
 
-    if (minRating > 0) {
-      filtered = filtered.filter(p => p.rating >= minRating);
-    }
-
+    if (minRating > 0) filtered = filtered.filter(p => p.rating >= minRating);
     filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
 
     productsCount.textContent = filtered.length;
-
-    const value = sortSelect.value;
-    let sorted = [...filtered];
-
-    if (value === 'name-asc') {
-      sorted.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    } else if (value === 'name-desc') {
-      sorted.sort((a, b) => b.name.localeCompare(a.name, 'ru'));
-    } else if (value === 'price-asc') {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (value === 'price-desc') {
-      sorted.sort((a, b) => b.price - a.price);
-    }
-
-    renderProducts(sorted);
+    renderProducts(sortProducts(filtered, sortSelect.value));
   }
 
-  function renderProducts(sortedProducts) {
+  function renderProducts(list) {
     grid.innerHTML = '';
 
-    sortedProducts.forEach(product => {
+    list.forEach(product => {
       const card = document.createElement('div');
       card.className = 'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full';
 
@@ -169,20 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
               ${product.name}
             </a>
           </h3>
-
           <div class="flex items-center">
             <div class="flex text-yellow-400 text-xl">
               ${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5 - Math.floor(product.rating))}
             </div>
             <span class="ml-2 text-sm text-gray-600">(${product.rating})</span>
           </div>
-
-          <div class="text-2xl font-bold text-primary mt-1">
-            $${product.price.toFixed(2)}
-          </div>
-
+          <div class="text-2xl font-bold text-primary mt-1">${product.price.toFixed(2)} $</div>
           <p class="text-sm text-gray-500">${product.category}</p>
-
           <button
             data-id="${product.id}"
             class="mt-auto bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-medium transition-colors add-to-cart"
@@ -196,27 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function sortAndRender(value) {
-    let sorted = [...products];
+  updateRangeDisplay();
+  renderProducts(sortProducts(products, 'name-asc'));
 
-    if (value === 'name-asc') {
-      sorted.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    } else if (value === 'name-desc') {
-      sorted.sort((a, b) => b.name.localeCompare(a.name, 'ru'));
-    } else if (value === 'price-asc') {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (value === 'price-desc') {
-      sorted.sort((a, b) => b.price - a.price);
-    }
-
-    renderProducts(sorted);
-  }
-
-  sortAndRender('name-asc');
-
-  sortSelect.addEventListener('change', e => {
-    sortAndRender(e.target.value);
-  });
+  sortSelect.addEventListener('change', () => applyFilters());
 
   toggleBtn.addEventListener('click', () => {
     filtersPanel.classList.toggle('hidden');
@@ -225,27 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
     filtersIcon.classList.toggle('rotate-180', !isHidden);
   });
 
-  sliderMin.addEventListener('input', () => {
-    updateRangeDisplay();
-    applyFilters();
-  });
-
-  sliderMax.addEventListener('input', () => {
-    updateRangeDisplay();
-    applyFilters();
-  });
+  sliderMin.addEventListener('input', () => { updateRangeDisplay(); applyFilters(); });
+  sliderMax.addEventListener('input', () => { updateRangeDisplay(); applyFilters(); });
 
   ratingFilters.forEach(checkbox => {
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
         minRating = Math.max(minRating, parseInt(checkbox.value));
-        ratingFilters.forEach(c => {
-          if (parseInt(c.value) < minRating) c.checked = false;
-        });
+        ratingFilters.forEach(c => { if (parseInt(c.value) < minRating) c.checked = false; });
       } else {
-        minRating = Math.max(...Array.from(ratingFilters)
-          .filter(c => c.checked)
-          .map(c => parseInt(c.value)) || [0]);
+        const checked = Array.from(ratingFilters).filter(c => c.checked).map(c => parseInt(c.value));
+        minRating = checked.length ? Math.max(...checked) : 0;
       }
       applyFilters();
     });
@@ -265,71 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   });
 
-  function updateRangeDisplay() {
-    minPrice = parseInt(sliderMin.value);
-    maxPrice = parseInt(sliderMax.value);
-
-    if (minPrice > maxPrice) {
-      sliderMin.value = maxPrice;
-      minPrice = maxPrice;
-    }
-    if (maxPrice < minPrice) {
-      sliderMax.value = minPrice;
-      maxPrice = minPrice;
-    }
-
-    minDisplay.textContent = `$${minPrice}`;
-    maxDisplay.textContent = `$${maxPrice}`;
-
-    const percentMin = (minPrice / 400) * 100;
-    const percentMax = (maxPrice / 400) * 100;
-    rangeFill.style.left = percentMin + '%';
-    rangeFill.style.width = (percentMax - percentMin) + '%';
-  }
-
-  function applyFilters() {
-    let filtered = [...products];
-
-    if (minRating > 0) {
-      filtered = filtered.filter(p => p.rating >= minRating);
-    }
-
-    filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
-
-    productsCount.textContent = filtered.length;
-
-    const value = sortSelect.value;
-    let sorted = [...filtered];
-
-    if (value === 'name-asc') {
-      sorted.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    } else if (value === 'name-desc') {
-      sorted.sort((a, b) => b.name.localeCompare(a.name, 'ru'));
-    } else if (value === 'price-asc') {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (value === 'price-desc') {
-      sorted.sort((a, b) => b.price - a.price);
-    }
-
-    renderProducts(sorted);
-  }
-
-  grid.addEventListener('click', function (e) {
+  grid.addEventListener('click', e => {
     const btn = e.target.closest('.add-to-cart');
     if (!btn) return;
 
     const id = parseInt(btn.dataset.id);
     if (!id) return;
 
-    let cart = window.cartUtils.getCart();
+    const cart = window.cartUtils.getCart();
     const existing = cart.find(i => i.id === id);
-
     if (existing) {
       existing.quantity += 1;
     } else {
       cart.push({ id, quantity: 1 });
     }
-
     window.cartUtils.saveCart(cart);
 
     const originalText = btn.textContent;
@@ -344,20 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1400);
   });
 
-  updateRangeDisplay();
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const searchQuery = urlParams.get('search');
+  const searchQuery = new URLSearchParams(window.location.search).get('search');
 
   if (searchQuery) {
-    const filtered = products.filter(p => 
+    const filtered = products.filter(p =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (filtered.length === 0) {
-      grid.innerHTML = `<p class="text-center text-gray-600 py-12 text-xl col-span-full">
-        Товары по запросу "${searchQuery}" не найдены
-      </p>`;
+      grid.innerHTML = `<p class="text-center text-gray-600 py-12 text-xl col-span-full">Товары по запросу "${searchQuery}" не найдены</p>`;
       productsCount.textContent = '0';
     } else {
       renderProducts(filtered);
