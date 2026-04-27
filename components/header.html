@@ -12,15 +12,11 @@
       <a href="about.html" data-nav="about" class="text-gray-700 hover:text-primary transition-colors">О нас</a>
     </nav>
 
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4">
       <div class="relative hidden md:block">
         <form id="search-form">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Поиск товаров..."
-            class="pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition"
-          >
+          <input type="text" id="search-input" placeholder="Поиск товаров..."
+            class="pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition">
           <svg class="w-5 h-5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -33,6 +29,14 @@
         </svg>
         <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">0</span>
       </a>
+
+      <button id="mobile-menu-btn" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:32px;height:32px;">
+        <span style="display:block;width:22px;height:2px;background:#374151;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#374151;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#374151;border-radius:2px;"></span>
+      </button>
     </div>
   </div>
+
+  <div id="mobile-menu" style="display:none;border-top:1px solid #f3f4f6;background:#fff;padding:8px 16px 16px;"></div>
 </header>

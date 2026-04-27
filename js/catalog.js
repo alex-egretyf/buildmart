@@ -1,4 +1,5 @@
 import { products } from '../data/products.js';
+import { getCart, saveCart } from './cart-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const main = document.querySelector('main');
@@ -221,14 +222,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = parseInt(btn.dataset.id);
     if (!id) return;
 
-    const cart = window.cartUtils.getCart();
+    const cart = getCart();
     const existing = cart.find(i => i.id === id);
     if (existing) {
       existing.quantity += 1;
     } else {
       cart.push({ id, quantity: 1 });
     }
-    window.cartUtils.saveCart(cart);
+    saveCart(cart);
 
     const originalText = btn.textContent;
     btn.textContent = 'Добавлено!';

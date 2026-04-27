@@ -1,4 +1,5 @@
 import { products } from '../data/products.js';
+import { getCart, saveCart } from './cart-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const cartContent = document.getElementById('cart-content');
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let promoDiscount = 0;
 
   function renderCart() {
-    const cart = window.cartUtils.getCart();
+    const cart = getCart();
 
     if (cart.length === 0) {
       cartContent.classList.add('hidden');
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     cartContent.classList.remove('hidden');
+    cartContent.classList.add('grid');
     emptyCart.classList.add('hidden');
 
     cartItems.innerHTML = '';
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = parseInt(button.dataset.id);
     if (!id) return;
 
-    let cart = window.cartUtils.getCart();
+    let cart = getCart();
 
     if (button.classList.contains('remove-item')) {
       cart = cart.filter(i => i.id !== id);
@@ -123,8 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (item) item.quantity++;
     }
 
-    window.cartUtils.saveCart(cart);
-    window.cartUtils.updateCartBadge();
+    saveCart(cart);
     renderCart();
   });
 

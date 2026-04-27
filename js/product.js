@@ -1,4 +1,5 @@
 import { products } from '../data/products.js';
+import { getCart, saveCart } from './cart-utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       specsGrid.appendChild(item);
     });
   } else {
-    specsGrid.innerHTML = '<p class="text-gray-500">Характеристики отсутствуют</p>';те
+    specsGrid.innerHTML = '<p class="text-gray-500">Характеристики отсутствуют</p>';
   }
 
   let quantity = 1;
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addBtn = document.getElementById('add-to-cart-btn');
 
   addBtn.addEventListener('click', () => {
-    let currentCart = window.cartUtils.getCart();
+    let currentCart = getCart();
 
     const existingItem = currentCart.find(item => item.id === product.id);
 
@@ -104,21 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
       currentCart.push({ id: product.id, quantity });
     }
 
-    window.cartUtils.saveCart(currentCart);
+    saveCart(currentCart);
 
-    const originalText = addBtn.textContent;
+    const originalHTML = addBtn.innerHTML;
     const originalClasses = addBtn.className;
 
-    addBtn.textContent = 'Добавлено!';
+    addBtn.innerHTML = 'Добавлено!';
     addBtn.classList.add('bg-green-600');
     addBtn.disabled = true;
 
     setTimeout(() => {
-      addBtn.textContent = originalText;
+      addBtn.innerHTML = originalHTML;
       addBtn.className = originalClasses;
       addBtn.disabled = false;
     }, 1200);
-
-    window.cartUtils.updateCartBadge();
   });
 });
