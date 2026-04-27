@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BuildMart — Акции</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/tailwind.config.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col antialiased">
+
+  <div id="header-root"></div>
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-10">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Акции</h1>
+
+    <div class="flex flex-col items-center justify-center py-32 text-center">
+      <div class="text-8xl mb-8">🏷️</div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">Скоро здесь появятся акции</h2>
+      <p class="text-xl text-gray-500 mb-10">Следите за обновлениями — мы готовим выгодные предложения</p>
+      <a href="index.html" class="inline-block bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-xl font-medium text-lg transition">
+        В каталог
+      </a>
+    </div>
+  </main>
+
+  <div id="footer-root"></div>
+
+  <script defer src="./js/main.js"></script>
+  <script type="module">
+    import { initComponents } from './js/components.js';
+    initComponents('deals');
+  </script>
+</body>
+</html>
